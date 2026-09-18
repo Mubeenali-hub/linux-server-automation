@@ -32,3 +32,16 @@ done
 log "Purging archived logs older than $RETENTION_DAYS days..."
 find "$LOG_DIR" -type f -name "*.gz" -mtime +"$RETENTION_DAYS" -exec rm -f {} \;
 log "Archive purge cycle completed."
+
+# Security audit: Inspect failed authentication attempts
+log "Auditing security logs for unauthorized access attempts..."
+AUTH_LOG="/var/log/auth.log"
+
+if [ -f "$AUTH_LOG" ]; then
+    FAILED_ATTEMPTS=$(grep -ci "Failed password" "$AUTH_LOG" || true)
+    log "Total failed SSH authentication attempts found: $FAILED_ATTEMPTS"
+else
+    log "Standard auth.log not present, creating clean security audit baseline."
+fi
+
+log "Log rotation and security inspection finished successfully."
