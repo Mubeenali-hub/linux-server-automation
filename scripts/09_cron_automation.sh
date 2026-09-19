@@ -46,3 +46,16 @@ add_job_if_missing "$CRON_BACKUP" "Daily 2 AM Backup Routine"
 add_job_if_missing "$CRON_MONITOR" "Every 30 Mins Resource Monitor"
 add_job_if_missing "$CRON_WATCHDOG" "Every 15 Mins Service Watchdog"
 add_job_if_missing "$CRON_ROTATOR" "Daily Midnight Log Rotation"
+
+# Apply updated crontab
+crontab "$TMP_CRON"
+rm -f "$TMP_CRON"
+log "Crontab successfully updated with automation routines."
+
+# Verification dump
+log "Current active crontab schedules:"
+crontab -l | while read -r line; do
+    log "CRON: $line"
+done
+
+log "Task scheduler configuration completed."
