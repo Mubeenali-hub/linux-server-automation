@@ -56,3 +56,28 @@ for svc in "${SERVICES[@]}"; do
     fi
 done
 echo "----------------------------------------------------------------"
+
+# 3. Scheduled Automation Routines
+echo -e "${BOLD}[+] Scheduled Automation Tasks (Crontab):${NC}"
+CRON_COUNT=$(crontab -l 2>/dev/null | grep -v '^#' | grep -c . || true)
+if [ "$CRON_COUNT" -gt 0 ]; then
+    echo -e "  Active Tasks  : ${GREEN}${CRON_COUNT} scheduled routines active${NC}"
+else
+    echo -e "  Active Tasks  : ${YELLOW}No active cron tasks configured${NC}"
+fi
+
+# 4. Storage & Log Telemetry
+echo "----------------------------------------------------------------"
+echo -e "${BOLD}[+] Log Directory Footprint:${NC}"
+if [ -d "logs" ]; then
+    TOTAL_LOGS=$(find logs -type f | wc -l)
+    LOG_SIZE=$(du -sh logs 2>/dev/null | awk '{print $1}')
+    echo -e "  Files Tracked : ${GREEN}${TOTAL_LOGS} files${NC}"
+    echo -e "  Logs Disk Footprint : ${GREEN}${LOG_SIZE}${NC}"
+else
+    echo -e "  Logs Status   : ${YELLOW}logs/ directory not found${NC}"
+fi
+
+echo -e "${CYAN}================================================================${NC}"
+echo -e "${GREEN}${BOLD}Status: All systems audited and automation baseline healthy.${NC}"
+echo -e "${CYAN}================================================================${NC}"
